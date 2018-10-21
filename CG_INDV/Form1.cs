@@ -106,10 +106,7 @@ namespace CG_INDV
             
             if (point_in_polygon(p))
                 return;
-            int ind = 0; // closest point
-            for (int i = 0; i < shell.Count; i++)
-                if (distance(p, shell[i]) < distance(p, shell[ind]))
-                    ind = i;
+
 
             int l = -1; // left point
             for (int i = 0; i < shell.Count; i++)
@@ -127,7 +124,7 @@ namespace CG_INDV
                    break;
                 }
 
-            //if (l > r) { int t = l; l = r; r = t; }
+
             List<PointF> new_shell = new List<PointF>();
             int cur = l ;
             new_shell.Add(shell[cur]);
@@ -138,21 +135,8 @@ namespace CG_INDV
             new_shell.Add(p);
 
             shell = new_shell;
-            return;
             
-            // l<r
-            if ((r - l - 1) < (shell.Count - 1 - r + l)) {
-                new_shell = shell.Take(l+1).ToList(); // 0..l
-                new_shell.Add(p); // M
-                new_shell.AddRange(shell.Skip(r)); // r..end
-            }
-            else {
-                new_shell = new List<PointF>();
-                new_shell.Add(p);
-                new_shell.AddRange(shell.GetRange(l, r - l + 1));
-            }
-            shell = new_shell;
-            //
+            
         }
 
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
