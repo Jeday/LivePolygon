@@ -14,6 +14,8 @@ namespace CG_INDV
     {
         private List<PointF> shell = new List<PointF>();
 
+        
+
         public Form1()
         {
             InitializeComponent();
@@ -75,6 +77,7 @@ namespace CG_INDV
 
         private bool is_left(PointF p, PointF s) {
             foreach (PointF s1 in shell) {
+                
                 if (s == s1) continue;
                 float pos = (s.X - p.X) * (s1.Y - p.Y) - (s.Y - p.Y) * (s1.X - p.X);
                 if (pos < 0.0)            // слева
@@ -95,12 +98,20 @@ namespace CG_INDV
             return true;
         }
 
+        private double distance(PointF p1, PointF p2) {
+            return Math.Sqrt((p2.X - p1.X) * (p2.X - p1.X) + (p2.Y - p1.Y) * (p2.Y - p1.Y));
+        }
+
         private void add_to_shell(PointF p) {
+            
             if (point_in_polygon(p))
                 return;
+            int ind = 0; // closest point
+            for (int i = 0; i < shell.Count; i++)
+                if (distance(p, shell[i]) < distance(p, shell[ind]))
+                    ind = i;
 
-            /// left line
-            int l = -1;
+            int l = -1; // left point
             for (int i = 0; i < shell.Count; i++)
                 if (is_left(p, shell[i])) {
                     l = i;
@@ -108,15 +119,28 @@ namespace CG_INDV
                 }
 
 
-            int r = -1;
+            int r = -1; // right point
             for (int i = 0; i < shell.Count; i++)
                 if (is_right(p, shell[i]))
                 {
                    r = i;
                    break;
                 }
-            List<PointF> new_shell;
-            if (l > r) { int t = l; l = r; r = t; } // l<r
+
+            //if (l > r) { int t = l; l = r; r = t; }
+            List<PointF> new_shell = new List<PointF>();
+            int cur = l ;
+            new_shell.Add(shell[cur]);
+            while (cur != r) {
+                cur = (cur+1) % shell.Count;
+                new_shell.Add(shell[cur]);
+            }
+            new_shell.Add(p);
+
+            shell = new_shell;
+            return;
+            
+            // l<r
             if ((r - l - 1) < (shell.Count - 1 - r + l)) {
                 new_shell = shell.Take(l+1).ToList(); // 0..l
                 new_shell.Add(p); // M
@@ -133,7 +157,7 @@ namespace CG_INDV
 
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
-            if (shell.Count < 3)
+            if (shell.Count <=1)
                 shell.Add(e.Location);
             else {
                 add_to_shell(e.Location);
@@ -151,6 +175,9 @@ namespace CG_INDV
                 e.Graphics.DrawLines(p, shell.ToArray());
                 e.Graphics.DrawLine(p, shell.Last(), shell.First());
             }
+            for (int i = 0; i < shell.Count; i++)
+                e.Graphics.DrawString(i.ToString(), new Font("Tahoma", 15, FontStyle.Bold), new SolidBrush(Color.Red), shell[i]);
+
         }
 
         private void button1_Click(object sender, EventArgs e)
