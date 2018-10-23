@@ -20,7 +20,7 @@ namespace CG_INDV
         {
             InitializeComponent();
         }
-
+        // из лаб. 
         private bool FindIntersection(PointF p1, PointF p2, PointF p3, PointF p4, out PointF intersection)
         {
             // Get the segments' parameters.
@@ -48,7 +48,7 @@ namespace CG_INDV
             // The segments intersect if t1 and t2 are between 0 and 1.
             return ((t1 >= 0) && (t1 <= 1) && (t2 >= 0) && (t2 <= 1));
         }
-
+        // из лаб. 
         private bool point_in_polygon(PointF n)
         {
             for (int i = 0; i < shell.Count; ++i)
@@ -98,10 +98,7 @@ namespace CG_INDV
             return true;
         }
 
-        private double distance(PointF p1, PointF p2) {
-            return Math.Sqrt((p2.X - p1.X) * (p2.X - p1.X) + (p2.Y - p1.Y) * (p2.Y - p1.Y));
-        }
-
+    
         private void add_to_shell(PointF p) {
             
             if (point_in_polygon(p))
